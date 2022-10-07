@@ -1,5 +1,6 @@
-import { ethers } from "./ethers-5.6.esm.min.js";
-import { contractAddress, contractAbi } from "./constants.js";
+//import { ethers } from "./libs/ethers-5.6.esm.min.js";
+import { ethers } from "ethers";
+import { contractAddress, contractAbi } from "./constants/constants.js";
 
 const connectButton = document.getElementById("connectButton");
 const fundButton = document.getElementById("fundButton");
@@ -14,7 +15,7 @@ const balanceButton = document.getElementById("balanceButton");
 withdrawButton.onclick = withdraw;
 balanceButton.onclick = getBalance;
 
-async function connect() {
+export const connect = async () => {
   if (typeof window.ethereum !== "undefined") {
     try {
       connectionAddress = await window.ethereum.request({
@@ -25,16 +26,19 @@ async function connect() {
       connectionAddress = undefined;
       console.log(error);
     }
-    connectButton.innerHTML = "Connected!";
+    //connectButton.innerHTML = "Connected!";
   } else {
-    connectButton.innerHTML = "Please install metamask";
+    //connectButton.innerHTML = "Please install metamask";
   }
-}
+};
 
-async function fund() {
+export const fund = async () => {
   const ethAmount = document.getElementById("ethAmount").value;
   //provider, connection
-  if (typeof window.ethereum !== "undefined") {
+  if (
+    connectionAddress !== undefined &&
+    typeof window.ethereum !== "undefined"
+  ) {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
     const contract = new ethers.Contract(contractAddress, contractAbi, signer);
@@ -55,9 +59,9 @@ async function fund() {
   }
   //signer
   //abi, address
-}
+};
 
-async function withdraw() {
+export const withdraw = async () => {
   console.log(`Withdrawing...`);
   if (typeof window.ethereum !== "undefined") {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -74,9 +78,9 @@ async function withdraw() {
   } else {
     withdrawButton.innerHTML = "Please install MetaMask";
   }
-}
+};
 
-async function getBalance() {
+export const getBalance = async () => {
   if (typeof window.ethereum !== "undefined") {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     try {
@@ -88,7 +92,7 @@ async function getBalance() {
   } else {
     balanceButton.innerHTML = "Please install MetaMask";
   }
-}
+};
 
 function listenForTransactionMine(transactionResponse, provider) {
   console.log(`Mining ${transactionResponse.hash}`);
