@@ -1,6 +1,11 @@
 import { ethers } from "./ethers-5.6.esm.min.js";
 import { contractAddress, contractAbi } from "./constants.js";
 
+var dialog = document.querySelector('dialog');
+dialog.querySelector('.close').addEventListener('click', function() {
+  dialog.close();
+});
+
 const connectButton = document.getElementById("connectButton");
 const fundButton = document.getElementById("fundButton");
 let connectionAddress = undefined;
@@ -98,10 +103,34 @@ function listenForTransactionMine(transactionResponse, provider) {
         console.log(
           `Completed with ${transactionReceipt.confirmations} confirmations. `
         );
+        dialog.showModal();
         resolve();
       });
     } catch (error) {
       reject(error);
+    }
+  });
+}
+
+document.querySelectorAll('a.mdl-navigation__link').forEach(link => {
+  link.onclick = (event) => {
+    showSection(event.target.id);
+  }
+});
+function showSection(id) {
+  const allSections = ['home', 'funder', 'receiver'];
+  const title = {
+    home: 'Home',
+    funder: 'Funder',
+    receiver: 'Receiver'
+  }[id];
+  allSections.forEach(sectionId => {
+    const section = document.getElementById(`${sectionId}-section`);
+    document.getElementById(`title`).innerHTML = title;
+    if (sectionId === id) {
+      section.style.display = 'block';
+    } else {
+      section.style.display = 'none';
     }
   });
 }
